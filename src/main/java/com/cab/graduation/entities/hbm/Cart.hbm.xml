@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cab.graduation.entities">
+    <class name="Cart" table="T_CART">
+        <id name="cId" type="java.lang.Integer">
+            <column name="C_ID" />
+            <generator class="native" />
+        </id>
+        <property name="cNum" type="java.lang.Integer">
+            <column name="C_NUM" />
+        </property>
+        <property name="cSubtotal" type="java.lang.Double">
+            <column name="C_SUBTOTAL" />
+        </property>
+        <many-to-one name="goods" class="Goods" column="GOOD_ID"></many-to-one>
+       	<many-to-one name="user" class="User" column="USER_ID"></many-to-one>
+    </class>
+</hibernate-mapping>

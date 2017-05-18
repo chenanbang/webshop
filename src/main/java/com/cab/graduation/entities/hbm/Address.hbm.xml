@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cab.graduation.entities">
+    <class name="Address" table="T_ADDRESS">
+        <id name="addrId" type="java.lang.Integer">
+            <column name="ADDR_ID" />
+            <generator class="native" />
+        </id>
+        <property name="address" type="java.lang.String">
+            <column name="ADDRESS" not-null="true"/>
+        </property>
+        <property name="receiver" type="java.lang.String">
+            <column name="RECEIVER" length="30" not-null="true"/>
+        </property>
+        <property name="receiverPhone" type="java.lang.String">
+            <column name="RECEIVER_PHONE" length="11" not-null="true"/>
+        </property>
+		
+		<property name="defaultAddress" type="java.lang.String">
+			<column name="DEFAULT_ADDRESS" length="1" not-null="true"></column>
+		</property>        
+        
+        <property name="createTime" type="java.util.Date" column="CREATE_TIME"></property>
+        <many-to-one name="user" class="User" column="USER_ID"></many-to-one>
+        
+        <set name="orderses" inverse="true" table="T_ORDER">
+        	<key column="ADDRESS_ID"/>
+        	<one-to-many class="Order"/>
+        </set>
+        
+    </class>
+</hibernate-mapping>

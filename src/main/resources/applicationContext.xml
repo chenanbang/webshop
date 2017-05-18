@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- 配置自动扫描的包 -->
+	<context:component-scan base-package="com.cab.graduation">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+	
+	<!-- 导入外部资源文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
+	<!-- <context:property-placeholder location="classpath:ecsdb.properties"/> -->
+
+	<!-- 配置dbcp数据库连接池 -->
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="${driverClassName}"/>  
+        <property name="url" value="${url}"/>  
+        <property name="username" value="${username}"/>  
+        <property name="password" value="${password}"/>  
+        minIdle: 最小空闲连接    
+        <property name="minIdle" value="${minIdle}"/>  
+        maxIdle: 最大空闲连接    
+        <property name="maxIdle" value="${maxIdle}"/>  
+        initialSize: 初始化连接    
+        <property name="initialSize" value="${initialSize}"/>  
+        连接被泄露时是否打印  
+        <property name="logAbandoned" value="${logAbandoned}"/>  
+        removeAbandonedTimeout: 超时时间(以秒数为单位)    
+        <property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}"/>  
+        在空闲连接回收器线程运行期间休眠的时间值,以毫秒为单位.  
+        <property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}"/>  
+         在每次空闲连接回收器线程(如果有)运行时检查的连接数量  
+        <property name="numTestsPerEvictionRun" value="${numTestsPerEvictionRun}"/>  
+        1000 * 60 * 30  连接在池中保持空闲而不被空闲连接回收器线程  
+        <property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}"/>  
+    </bean>   -->
+
+	<!-- 配置c3p0数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbcUrl}"></property>
+		<property name="user" value="${user}"></property>
+		<property name="password" value="${password}"></property>
+		
+		<property name="initialPoolSize" value="${initialPoolSize}"></property>
+		<property name="maxPoolSize" value="${maxPoolSize}"></property>
+		<property name="acquireIncrement" value="${acquireIncrement}"></property>
+		
+		<property name="checkoutTimeout" value="${checkoutTimeout}"></property>
+		<property name="idleConnectionTestPeriod" value="${idleConnectionTestPeriod}"></property>
+		<property name="maxStatements" value="${maxStatements}"></property>
+		
+		<!-- 定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 --> 
+		<property name="acquireRetryAttempts" value="30"></property> 
+
+		<!-- 两次连接中间隔时间，单位毫秒。Default: 1000 --> 
+		<property name="acquireRetryDelay" value="1000"></property> 
+
+		<!-- 连接关闭时默认将所有未提交的操作回滚。Default: false --> 
+		<property name="autoCommitOnClose" value="false"></property> 
+		
+	</bean>
+
+	<!-- 配置整合Hibernate的 LocalSessionFactoryBean-->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<!-- 配置数据源属性 -->
+		<property name="dataSource" ref="dataSource"></property>
+		
+		<!-- 配置Hibernate核心配置文件的位置及名称 -->
+		<property name="configLocation" value="classpath:hibernate.cfg.xml"></property>
+		
+		<!-- 配置映射文件 -->
+		<property name="mappingLocations" value="classpath:/com/**/hbm/*.hbm.xml"></property>
+	
+	</bean>
+	
+	<!-- 配置切面bean -->
+	<bean id="loginAspect" class="com.cab.graduation.web.aspect.LoginAspect"></bean>
+	<bean id="logAspect" class="com.cab.graduation.web.aspect.LogAspect"></bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 配置事务属性,并将其与事务管理器关联起来 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="add*" read-only="false" isolation="READ_COMMITTED" propagation="REQUIRED"/>
+			<tx:method name="get*" read-only="false" isolation="READ_COMMITTED" propagation="REQUIRED"/>
+			<tx:method name="find*" read-only="false" isolation="READ_COMMITTED" propagation="REQUIRED"/>
+		</tx:attributes>
+		
+	</tx:advice>
+	
+	<!-- 配置切入点,并将其与事务属性关联起来 -->
+	<aop:config>
+		<aop:pointcut expression="execution(* com.cab.graduation.service.*.*(..))" id="pointCut"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointCut"/>
+		<aop:aspect id="login" ref="loginAspect">
+			<aop:before method="checkUserLogin" pointcut-ref="pointCut"/>
+		</aop:aspect>
+		<aop:aspect id="log" ref="logAspect">
+			<aop:before method="executeBeforeLogs" pointcut-ref="pointCut"/>
+			<aop:after method="executeAfterLogs" pointcut-ref="pointCut"/>
+		</aop:aspect>
+	</aop:config>
+	
+	
+</beans>

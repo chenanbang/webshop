@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cab.graduation.entities">
+    <class name="Goods" table="T_GOODS">
+        <id name="goodId" type="java.lang.Integer">
+            <column name="G_ID" />
+            <generator class="native" /> 
+        </id>
+        <property name="goodName" type="java.lang.String">
+            <column name="G_NAME" length="50" not-null="true"/>
+        </property>
+        <property name="goodPrimePrice" type="java.lang.Double">
+            <column name="G_PRIME_PRICE" not-null="true" check="G_PRICE&gt;0"/>
+        </property>
+        <property name="goodSpikePrice" type="java.lang.Double">
+            <column name="G_SPIKE_PRICE" not-null="true" check="G_PRICE&gt;0"/>
+        </property>
+        <property name="goodStore" type="java.lang.Integer">
+        	<column name="G_STORE"></column>
+        </property>
+        <property name="goodSimpleDesc" type="string">
+        	<column name="G_SIMPLE_DESC"></column>
+        </property>
+        <property name="goodDescribe" type="java.lang.String">
+            <column name="G_DESCRIBE" length="200"/>
+        </property>
+        <property name="goodPath" type="string">
+        	<column name="G_PATH"></column>
+        </property>
+        <property name="goodDetailPath" type="string">
+        	<column name="G_DETAIL_PATH"></column>
+        </property>
+        <property name="goodSmallPath" type="string">
+        	<column name="G_SMALL_PATH"></column>
+        </property>
+        <property name="datetime" type="java.util.Date">
+        	<column name="DATETIME"></column>
+        </property>
+        <property name="del" type="int" column="DEL"></property>
+        <set name="orderItems" inverse="true" table="T_ORDERITEM" >
+        	<key column="GOOD_ID"/>
+        	<one-to-many class="OrderItem"/>
+        </set>
+        <set name="carts" inverse="true" table="T_CART">
+        	<key column="GOOD_ID"/>
+        	<one-to-many class="Cart"/>
+        </set>
+        <many-to-one name="classify" class="Classify" column="CLASSIFY_ID"></many-to-one>
+        
+    </class>
+</hibernate-mapping>

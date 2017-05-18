@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cab.graduation.entities">
+    <class name="User" table="T_USER">
+        <id name="userId" type="java.lang.Integer">
+            <column name="U_ID" />
+            <generator class="native" />
+        </id>
+        <property name="username" type="java.lang.String">
+            <column name="U_NAME" length="30" not-null="true"/>
+        </property>
+        <property name="password" type="java.lang.String">
+            <column name="PASSWORD" length="60" not-null="true"/>
+        </property>
+        <property name="gender" type="java.lang.String">
+        	<column name="GENDER" length="6" not-null="true"></column>
+        </property>
+        <property name="age" type="java.lang.Integer">
+        	<column name="AGE" default="24" check="AGE&gt;10 and AGE&lt;150"/>
+        </property>
+        <property name="email" type="java.lang.String">
+            <column name="EMAIL" length="100" not-null="true"/>
+        </property>
+        <property name="phone" type="string" column="PHONE" 
+        	length="11" not-null="true">
+        </property>
+        <property name="address" type="string" column="ADDRESS"
+        	not-null="true"></property>
+        	
+        <property name="registerTime" type="java.util.Date" column="REGISTER_TIME"
+        	not-null="true"></property>
+        <property name="state" type="java.lang.Integer">
+            <column name="STATE" default="0" length="1" not-null="true"/>
+        </property>
+        <property name="activeCode" type="java.lang.String">
+            <column name="ACTIVE_CODE" not-null="true"/>
+        </property>
+        <property name="rank" type="int" column="RANK" not-null="true"></property>
+        
+        <set name="orders" table="T_ORDER" inverse="true">
+        	<key column="USER_ID"/>
+        	<one-to-many class="Order"/>
+        </set>
+        
+        <set name="carts" table="T_CART" inverse="true">
+        	<key column="USER_ID"/>
+        	<one-to-many class="Cart"/>
+        </set>
+        
+        <set name="addresses" table="T_ADDRESS" inverse="true">
+        	<key column="USER_ID"/>
+        	<one-to-many class="Address"/>
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cab.graduation.entities">
+    <class name="Classify" table="T_CLASSIFY">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="native" />
+        </id>
+        <property name="category" type="java.lang.String">
+            <column name="CATEGORY" length="30"/>
+        </property>
+        <property name="productArea" type="java.lang.String">
+            <column name="PRODUCT_AREA" length="100"/>
+        </property>
+        <set name="goods" table="T_GOODS" inverse="true">
+        	<key column="CLASSIFY_ID"/>
+        	<one-to-many class="Goods"/>
+        </set>
+    </class>
+</hibernate-mapping>

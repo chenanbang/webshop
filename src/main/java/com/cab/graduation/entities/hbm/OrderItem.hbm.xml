@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cab.graduation.entities">
+    <class name="OrderItem" table="T_ORDERITEM">
+        <id name="orderItemId" type="java.lang.Integer">
+            <column name="OI_ID" />
+            <generator class="native" />
+        </id>
+        <property name="orderItemNum" type="java.lang.Integer">
+            <column name="OI_NUM" not-null="true"/>
+        </property>
+        <property name="orderItemSubtotal" type="java.lang.Double">
+            <column name="OI_SUBTOTAL" not-null="true"/>
+        </property>
+        <many-to-one name="order" class="Order" column="ORDER_ID"></many-to-one>
+        
+        <many-to-one name="goods" class="Goods" column="GOOD_ID"></many-to-one>
+        
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.cab.graduation.entities">
+    <class name="Order" table="T_ORDER">
+        <id name="orderId" type="java.lang.Integer">
+            <column name="O_ID" />
+            <generator class="native"/>
+        </id>
+        <property name="orderNo" type="java.lang.String">
+            <column name="O_NO" length="100" not-null="true"/>
+        </property>
+        <property name="orderTotalPrice" type="java.lang.Double">
+            <column name="O_TOTALPRICE" not-null="true"/>
+        </property>
+        <property name="orderCreateTime" type="java.util.Date">
+            <column name="O_CREATETIME" not-null="true"/>
+        </property>
+        <property name="isPay" type="string">
+            <column name="IS_PAY" length="2"/>
+        </property>
+        <property name="del" type="int" column="DEL"></property>
+        
+		<property name="orderStatus" type="int" column="ORDER_STATUS" not-null="true"></property>
+        
+        <many-to-one name="user" class="User" column="USER_ID"></many-to-one>
+        
+        <many-to-one name="address" class="Address" column="ADDRESS_ID"></many-to-one>
+        
+        <set name="orderItems" table="T_ORDERITEM" inverse="true">
+        	<key column="ORDER_ID"/>
+        	<one-to-many class="OrderItem"/>
+        </set>
+    </class>
+</hibernate-mapping>
