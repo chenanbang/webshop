@@ -67,7 +67,7 @@
 			<ul>
 				<c:if test="${user==null }">
 					<li id="headerLogin" class="headerLogin" style="display: list-item;">
-						<a href="${pageContext.request.contextPath}/showLoginPage">登录</a>|</li>
+						<a href="${pageContext.request.contextPath}/login">登录</a>|</li>
 					<li id="headerRegister" class="headerRegister"
 						style="display: list-item;"><a href="${pageContext.request.contextPath}/showRegisterPage">注册</a>|
 					</li>

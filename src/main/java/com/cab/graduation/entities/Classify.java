@@ -9,6 +9,16 @@ public class Classify {
 	private String productArea;
 	private Set<Goods> goods;
 
+	public Classify() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Classify(Integer id) {
+		super();
+		this.id = id;
+	}
+
 	public Integer getId() {
 		return id;
 	}

@@ -38,6 +38,8 @@
         </property>
         <property name="rank" type="int" column="RANK" not-null="true"></property>
         
+        <property name="del" type="int" column="DEL" not-null="true"></property>
+        
         <set name="orders" table="T_ORDER" inverse="true">
         	<key column="USER_ID"/>
         	<one-to-many class="Order"/>

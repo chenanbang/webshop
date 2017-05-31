@@ -37,6 +37,20 @@ public class Goods {
 		super();
 		this.goodId = goodId;
 	}
+	
+	public Goods(String goodName, Double goodPrimePrice, Double goodSpikePrice, Integer goodStore,
+			String goodSimpleDesc, String goodDescribe, String goodPath, Classify classify, Integer del) {
+		super();
+		this.goodName = goodName;
+		this.goodPrimePrice = goodPrimePrice;
+		this.goodSpikePrice = goodSpikePrice;
+		this.goodStore = goodStore;
+		this.goodSimpleDesc = goodSimpleDesc;
+		this.goodDescribe = goodDescribe;
+		this.goodPath = goodPath;
+		this.classify = classify;
+		this.del = del;
+	}
 
 	public Integer getGoodId() {
 		return goodId;

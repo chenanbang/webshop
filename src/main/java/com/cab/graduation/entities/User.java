@@ -26,6 +26,8 @@ public class User {
 	private Set<Cart> carts=new HashSet<>();
 	private Set<Address> addresses=new HashSet<>();
 	
+	private Integer del;
+	
 	public User() {
 
 	}
@@ -162,12 +164,20 @@ public class User {
 		this.addresses = addresses;
 	}
 
+	public Integer getDel() {
+		return del;
+	}
+
+	public void setDel(Integer del) {
+		this.del = del;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", gender=" + gender
 				+ ", age=" + age + ", email=" + email + ", phone=" + phone + ", address=" + address + ", registerTime="
 				+ registerTime + ", state=" + state + ", activeCode=" + activeCode + ", rank=" + rank + ", orders="
-				+ orders + ", carts=" + carts + ", addresses=" + addresses + "]";
+				+ orders + ", carts=" + carts + ", addresses=" + addresses + ", del=" + del + "]";
 	}
 
 }

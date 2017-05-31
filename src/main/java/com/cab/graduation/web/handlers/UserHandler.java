@@ -53,6 +53,7 @@ public class UserHandler {
 		user.setRegisterTime(new Date());
 		user.setState(0);
 		user.setRank(0);
+		user.setDel(0);
 		
 		//邮件主题
 		String title="请激活你在WebShop官网上注册的用户";
@@ -78,16 +79,22 @@ public class UserHandler {
 		return "redirect:/index";
 	}
 	
-	
+	/**
+	 * 删除用户的操作接口(软删除)
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping(path="user/delete/{userId}",method=RequestMethod.DELETE)
 	public String delete(@PathVariable("userId") Integer userId){
 		User user=userService.findUserById(userId);
-		userService.delete(user);
+		//进行软删除操作
+		user.setDel(1);
+		userService.saveOrUpdate(user);
 		return "redirect:/user/userManage/1";
 	}
 	
 	/**
-	 * 展示修改页面
+	 * 展示修改页面(管理员修改用户信息时所调用的接口)
 	 * @param userId
 	 * @param map
 	 * @return
@@ -99,6 +106,13 @@ public class UserHandler {
 		return "admin/user/edit";
 	}
 	
+	
+	/**
+	 * 用户自己修改自己信息时所调用的接口
+	 * @param request
+	 * @param map
+	 * @return
+	 */
 	@RequestMapping(path="/user/update",method=RequestMethod.GET)
 	public String updateUserInfo(HttpServletRequest request,Map<String,User> map){
 		User user=(User) request.getSession().getAttribute("user");
@@ -106,9 +120,16 @@ public class UserHandler {
 			return "redirect:/login";
 		}
 		map.put("user", user);
+		//暂时先使用管理页面来进行信息的显示，实际开发中应该为client/user/edit
 		return "admin/user/edit";
 	}
 	
+	/**
+	 * 执行实际修改操作的接口
+	 * @param request
+	 * @param user
+	 * @return
+	 */
 	@RequestMapping(path="/user/update",method=RequestMethod.PUT)
 	public String executeUpdate(HttpServletRequest request,User user){
 		userService.saveOrUpdate(user);
@@ -128,7 +149,8 @@ public class UserHandler {
 	@RequestMapping(path="/user/userManage/{currentPageNum}")
 	public String listUser(@PathVariable("currentPageNum") Integer currentPageNum,Map<String,Page<User>> map){
 		Page<User> page=new Page<>(currentPageNum, 6);
-		commonService.pageQuery(User.class, page, new Conditions());
+		Conditions conditions=new Conditions(" where user.del=?", new String[]{"0"});
+		commonService.pageQuery(User.class, page, conditions);
 		
 		map.put("pageBean", page);
 		
@@ -137,9 +159,9 @@ public class UserHandler {
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
 	public String showLoginPage(){
-		
 		return "login";
 	}
+	
 	@RequestMapping(path="/login",method=RequestMethod.POST)
 	public String login(@RequestParam(value="admin",required=false) String admin,
 						@RequestParam(value="username",required=false) String username,
@@ -203,11 +225,6 @@ public class UserHandler {
 		return "redirect:/index";
 	}
 	
-	@RequestMapping(value="/logout")
-	public String logout(HttpSession session){
-		session.removeAttribute("user");
-		return "redirect:/index";
-	}
 	
 	@RequestMapping(path="/findUserByUsername")
 	public void findUserByUsername(@RequestParam("username") String username,HttpServletResponse response) throws IOException{
@@ -220,19 +237,6 @@ public class UserHandler {
 		}
 	}
 	
-	@RequestMapping(path="/user/shouCangInfo",method=RequestMethod.GET)
-	public String shouCangInfo(){
-		
-		return "client/user/shouCangInfo";
-		
-	}
-	
-	@RequestMapping(path="/user/jifenInfo",method=RequestMethod.GET)
-	public String jifenInfo(){
-		
-		return "client/user/jifenInfo";
-		
-	}
 	
 	/**
 	 * 用于激活用户的接口
@@ -251,6 +255,27 @@ public class UserHandler {
 			map.put("message", "您的账号已经激活过了,请直接登录!");
 		}
 		return "login";
+	}
+	
+	@RequestMapping(value="/logout")
+	public String logout(HttpSession session){
+		session.removeAttribute("user");
+		return "redirect:/index";
+	}
+	
+	
+	@RequestMapping(path="/user/shouCangInfo",method=RequestMethod.GET)
+	public String shouCangInfo(){
+		
+		return "client/user/shouCangInfo";
+		
+	}
+	
+	@RequestMapping(path="/user/jifenInfo",method=RequestMethod.GET)
+	public String jifenInfo(){
+		
+		return "client/user/jifenInfo";
+		
 	}
 	
 }

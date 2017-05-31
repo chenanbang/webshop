@@ -164,6 +164,7 @@
 								<form:hidden path="activeCode"/>
 								<form:hidden path="registerTime"/>
 								<form:hidden path="rank"/>
+								<form:hidden path="del"/>
 								
 								<tr>
 									<th>
