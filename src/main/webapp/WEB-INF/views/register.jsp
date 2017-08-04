@@ -8,11 +8,25 @@
 <title>会员注册</title>
 <link href="${pageContext.request.contextPath}/css/common.css" rel="stylesheet" type="text/css"/>
 <link href="${pageContext.request.contextPath}/css/register.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.8.3.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/xmlHttp.js">
 </script>
 <script type="text/javascript">
 onload=function(){
 	
+}
+
+//使用ajax来发送 注册请求
+function register(){
+	
+	$.post($("#registerForm")[0].action, $("#registerForm").serialize(), function(ajaxResult) {
+		
+        if (ajaxResult.status == 1) {
+        	alert(ajaxResult.message);
+           location.href = ajaxResult.data;
+        }
+    }, 'json');
+    event.preventDefault();
 }
 
 //表单提交之前对各个表单项进行校验
@@ -271,6 +285,7 @@ function createElementImg(id){
 }
 
 </script>
+
 </head>
 <body>
 <div class="container header">
@@ -393,7 +408,9 @@ function createElementImg(id){
 									
 								</th>
 								<td>
-									<input type="submit" class="submit" value="同意以下协议并注册"/>
+									<!-- <input type="submit" class="submit" value="同意以下协议并注册"/> -->
+									<button class="submit" onclick="register();">同意以下协议并注册</button>
+									
 								</td>
 							</tr>
 							<tr>

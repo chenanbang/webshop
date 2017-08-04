@@ -20,14 +20,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cab.graduation.entities.User;
 import com.cab.graduation.service.CommonService;
 import com.cab.graduation.service.UserService;
 import com.cab.graduation.utils.Conditions;
+import com.cab.graduation.utils.MailboxEntranceUtil;
+import com.cab.graduation.utils.JsonResult;
 import com.cab.graduation.utils.Page;
 import com.cab.graduation.utils.SaltEncryptionUtils;
 import com.cab.graduation.utils.SendEmailUtil;
+import com.cab.graduation.utils.StringUtils;
 import com.cab.graduation.utils.WebShopUtils;
 
 @Controller
@@ -45,8 +49,9 @@ public class UserHandler {
 		return "register";
 	}
 	
+	@ResponseBody
 	@RequestMapping(path="/executeRegister")
-	public String executeRegister(@ModelAttribute("registerUser")User user,Map<String,String> map,HttpSession session) {
+	public JsonResult executeRegister(HttpServletRequest request, @ModelAttribute("registerUser")User user,Map<String,String> map,HttpSession session) {
 		
 		user.setPassword(SaltEncryptionUtils.generate(user.getPassword()));
 		user.setActiveCode(WebShopUtils.generateActiveSerialNum());
@@ -56,7 +61,7 @@ public class UserHandler {
 		user.setDel(0);
 		
 		//邮件主题
-		String title="请激活你在WebShop官网上注册的用户";
+		String subject="请激活你在WebShop官网上注册的用户";
 		///users/{username}/{password}/confirm_verification/{active_code}
 		//邮件内容
 		String content="Hi @"+user.getUsername()+"!<br/><br/>"
@@ -67,16 +72,29 @@ public class UserHandler {
 				+ "你收到这个邮件是由于你最近创建了一个新的WebShop账号. 如果你没有进行这些操作,请忽略这个邮件,谢谢!";
 		
 		//邮件接收方
-		String toEmail=user.getEmail();
+		String rcpt_to=user.getEmail();
 		
 		//进行用户的添加操作
 		userService.saveOrUpdate(user);
 		
 		//进行实际的邮件发送操作
-		SendEmailUtil.sendActiveEmail(title, content, toEmail);
+		try {
+			SendEmailUtil.sendActiveEmail(rcpt_to, subject, content);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		map.put("message", "恭喜您,注册成功,但需要前往注册时填写的邮箱进行激活,激活后方可登陆!");
-		return "redirect:/index";
+		//先获取请求的路径,然后再拼接操作成功后所前往的 url
+//		String requestURL = request.getRequestURL().toString();
+//		String redirectPath = requestURL.substring(0, requestURL.lastIndexOf("/")+1)+"index";
+//		System.out.println("redirectPath: "+redirectPath);
+		
+		String mailboxEntranceURL = MailboxEntranceUtil.getMailboxEntranceURL(StringUtils.getEmailKeyByEmailAddress(rcpt_to));
+		System.out.println(mailboxEntranceURL);
+		String message = "恭喜您,注册成功,但需要激活才能登陆,请及时查看邮箱!";
+		return JsonResult.newSuccessInstance(message, mailboxEntranceURL);
+		
 	}
 	
 	/**
