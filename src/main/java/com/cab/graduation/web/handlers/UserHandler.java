@@ -65,11 +65,11 @@ public class UserHandler {
 		///users/{username}/{password}/confirm_verification/{active_code}
 		//邮件内容
 		String content="Hi @"+user.getUsername()+"!<br/><br/>"
-				+ "<a href="+"'http://59.110.243.156:8080/webshop/users/confirm_verification/"+user.getActiveCode()+"'>点击链接进行激活操作!</a>"
+				+ "<a href="+"'http://139.199.117.176:8080/webshop/users/confirm_verification/"+user.getActiveCode()+"'>点击链接进行激活操作!</a>"
 				+ "<br/><hr/><br/>"
-				+ "如果链接不起作用,你也可以把下面的链接地址直接粘到浏览器地址栏中进行直接访问:<br/>"
-				+ "<a href="+"'http://59.110.243.156:8080/webshop/users/confirm_verification/"+user.getActiveCode()+"'>http://59.110.243.156:8080/webshop/users/confirm_verification/"+user.getActiveCode()+"</a><br/><br/>"
-				+ "你收到这个邮件是由于你最近创建了一个新的WebShop账号. 如果你没有进行这些操作,请忽略这个邮件,谢谢!";
+				+ "如果链接不起作用,您也可以把下面的链接地址直接粘到浏览器地址栏中进行直接访问:<br/>"
+				+ "<a href="+"'http://139.199.117.176:8080/webshop/users/confirm_verification/"+user.getActiveCode()+"'>http://59.110.243.156:8080/webshop/users/confirm_verification/"+user.getActiveCode()+"</a><br/><br/>"
+				+ "您收到这个邮件是由于你最近创建了一个新的WebShop账号. 如果您没有进行这些操作,请忽略这个邮件,谢谢!";
 		
 		//邮件接收方
 		String rcpt_to=user.getEmail();
