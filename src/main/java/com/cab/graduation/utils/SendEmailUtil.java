@@ -63,7 +63,7 @@ public class SendEmailUtil {
         params.add(new BasicNameValuePair("apiKey", apiKey));
         params.add(new BasicNameValuePair("to", rcpt_to));
         params.add(new BasicNameValuePair("from", "sendcloud@sendcloud.org"));
-        params.add(new BasicNameValuePair("fromName", "SendCloud"));
+        params.add(new BasicNameValuePair("fromName", "分期商城"));
         params.add(new BasicNameValuePair("subject", subject));
         params.add(new BasicNameValuePair("html", html));
 
