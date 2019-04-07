@@ -47,8 +47,8 @@ public class SaltEncryptionUtils {
 		/**
 		 * 校验密码是否正确
 		 */
-		public static boolean verify(String password, String md5) {
-			char[] cs = md5.toCharArray();
+		public static boolean verify(String password, String encryptedByMd5) {
+			char[] cs = encryptedByMd5.toCharArray();
 			char[] cs1 = new char[32];
 			char[] cs2 = new char[16];
 			for (int i = 0; i < 48; i += 3) {

@@ -76,7 +76,7 @@ public class GoodsHandlers {
 	}
 	
 	/**
-	 * @param classifyId
+	 * @param goods
 	 * @param request
 	 * @param goods
 	 * @param file
@@ -246,7 +246,7 @@ public class GoodsHandlers {
 	@RequestMapping(value="/goodsClassify/{classifyId}/{pageNo}")
 	public String goodsClassify(@PathVariable("classifyId")Integer classifyId,@PathVariable("pageNo")Integer pageNo,Map<String,Object> map){
 		
-		Page<com.cab.graduation.entities.Goods> page=new Page<>(pageNo, 12,false);
+		Page<com.cab.graduation.entities.Goods> page=new Page<com.cab.graduation.entities.Goods>(pageNo, 12,false);
 		Conditions conditions=new Conditions(" where goods.classify.id = ?", new String[]{String.valueOf(classifyId)});
 		goodsService.pageQuery(com.cab.graduation.entities.Goods.class, page, conditions);
 		map.put("pageBean", page);
@@ -264,7 +264,7 @@ public class GoodsHandlers {
 	public String showListPage(@PathVariable("pageNo")Integer pageNo,Map<String,Page> map){
 		//List<Goods>goodsList=goodsService.list();
 //		map.put("goodsList", goodsList);
-		Page<com.cab.graduation.entities.Goods> page=new Page<>(pageNo, 6,true);
+		Page<com.cab.graduation.entities.Goods> page=new Page<com.cab.graduation.entities.Goods>(pageNo, 6,true);
 		Conditions conditions=new Conditions(" where goods.del=?", new String[]{"0"});
 		goodsService.pageQuery(com.cab.graduation.entities.Goods.class, page, conditions);
 		map.put("pageBean", page);
